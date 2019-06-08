@@ -4,10 +4,10 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY package.json /usr/src/app/
+COPY package*.json /usr/src/app/
 
 # set application PORT and expose docker PORT, 80 is what Elastic Beanstalk expects
-ENV PORT 80
+
 EXPOSE 80
 
 RUN npm install
