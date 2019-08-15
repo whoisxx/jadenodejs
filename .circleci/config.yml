@@ -61,7 +61,12 @@ jobs:
             echo "will push to release branch /release/" $CIRCLE_TAG
             
             git branch -a
+            #remove above line
+
+            git checkout -b release/${CIRCLE_TAG%-*}
             git push origin release/${CIRCLE_TAG%-*}
+
+            
 
 
 
