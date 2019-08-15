@@ -63,6 +63,7 @@ jobs:
           command: |
             echo "will push to release branch /release/" $CIRCLE_TAG
             
+            git remote -v 
             git branch -a
             #remove above line
 
