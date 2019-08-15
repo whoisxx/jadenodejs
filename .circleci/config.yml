@@ -80,7 +80,7 @@ workflows:
             branches:
               ignore: /.*/
       - job_publish:
-          require:
+          requires:
             - tag_verify
 
 
