@@ -57,7 +57,7 @@ workflows:
 
   tag_trigger:
     jobs:
-      - tag_verify
+      - tag_verify:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
