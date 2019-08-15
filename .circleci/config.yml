@@ -1,0 +1,28 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: kjhman21/node:10.15.3-mocha
+
+command:
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: "test whoIam"
+          command: |
+            echo "whoami: " $(whoami)
+            echo  "whereami: " $(pwd)
+            echo "ls command: " 
+            ls -al
+
+
+workflows:
+  echo_test:
+    jobs:
+      - test
+
