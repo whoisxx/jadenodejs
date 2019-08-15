@@ -37,11 +37,12 @@ jobs:
           name: "verify tag and file verison match"
           command: |
             echo "tag version is " $CIRCLE_TAG
+            echo "tag format change? " ${CIRCLE_TAG%-*}
 
             file_version=v$(.circleci/version.sh)
             echo "file version is " $file_version
 
-            if [ $file_version == $CIRCLE_TAG ]; then
+            if [ $file_version == ${CIRCLE_TAG%-*} ]; then
               echo "verification pass"
             else
               echo "It's not same version."
