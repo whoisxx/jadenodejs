@@ -27,7 +27,26 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm test
+      - run: echo "npm test"
+
+  tag_verify:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: "verify tag and file verison match"
+          command: |
+            echo "tag version is " $CIRCLE_TAG
+
+            file_version=v$(.circleci/version.sh)
+            echo "file version is " $file_version
+
+            if [ v$file_version == $CIRCLE_TAG ]; then
+              echo "verification pass"
+            else
+              echo "It's not same version."
+              #exit 1
+            fi
 
 
 workflows:
@@ -35,4 +54,13 @@ workflows:
     jobs:
       - status
       - test
+  tag_trigger:
+    jobs:
+      - tag_verify
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
 
+    
