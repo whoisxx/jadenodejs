@@ -8,7 +8,7 @@ defaults: &defaults
 command:
 
 jobs:
-  test:
+  status:
     <<: *defaults
     steps:
       - checkout
@@ -21,10 +21,18 @@ jobs:
             ls -al
             echo "git branch: "
             git branch
+  
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm test
 
 
 workflows:
-  echo_test:
+  every_commit:
     jobs:
+      - status
       - test
 
