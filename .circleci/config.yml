@@ -79,13 +79,13 @@ workflows:
             branches:
               ignore: /.*/
       - job_publish:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
-            branches:
-              ignore: /.*/
-          # requires:
-          #   - tag_verify
+          # filters:
+          #   tags:
+          #     only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+          #   branches:
+          #     ignore: /.*/
+          requires:
+            - tag_verify
 
 
 
