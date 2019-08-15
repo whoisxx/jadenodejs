@@ -50,6 +50,7 @@ jobs:
 
 
 workflows:
+  version: 2
   every_commit:
     jobs:
       - status
