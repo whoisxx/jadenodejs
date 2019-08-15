@@ -19,6 +19,8 @@ jobs:
             echo  "whereami: " $(pwd)
             echo "ls command: " 
             ls -al
+            echo "git branch: "
+            git branch
 
 
 workflows:
