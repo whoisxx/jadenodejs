@@ -41,7 +41,7 @@ jobs:
             file_version=v$(.circleci/version.sh)
             echo "file version is " $file_version
 
-            if [ v$file_version == $CIRCLE_TAG ]; then
+            if [ $file_version == $CIRCLE_TAG ]; then
               echo "verification pass"
             else
               echo "It's not same version."
