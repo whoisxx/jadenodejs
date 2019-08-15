@@ -50,19 +50,19 @@ jobs:
 
 
 workflows:
-  version: 2
   every_commit:
     jobs:
       - status
       - test
+
   tag_trigger:
     jobs:
       - tag_verify
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
-            branches:
-              ignore: /.*/
+          # filters:
+          #   tags:
+          #     only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+          #   branches:
+          #     ignore: /.*/
 
 
     
