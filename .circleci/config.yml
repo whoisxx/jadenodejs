@@ -106,8 +106,12 @@ jobs:
 workflows:
   every_commit:
     jobs:
-      - status
-      - test
+      - status:
+          filters:
+            branches:
+              ignore:
+                - /release\/.*/
+                - master
 
   tag_trigger:
     jobs:
