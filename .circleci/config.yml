@@ -97,13 +97,21 @@ jobs:
           command: |
               echo "Publishing a major release! version=$CIRCLE_TAG"
               echo "npm publish --tag "
-
+      - run:
+          name: "delete release branch"
+          command: |
+              echo "Delete branch release/${CIRCLE_TAG%-*}"
+              git push origin --delete release/${CIRCLE_TAG%-*}
 
 workflows:
   every_commit:
     jobs:
-      - status
-      - test
+      - status:
+          filters:
+            branches:
+              ignore:
+                - /release\/.*/
+                - master
 
   tag_trigger:
     jobs:
