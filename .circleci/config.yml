@@ -7,21 +7,7 @@ defaults: &defaults
 
 command:
 
-jobs:
-  status:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: "test whoIam"
-          command: |
-            echo "whoami: " $(whoami)
-            echo  "whereami: " $(pwd)
-            echo "ls command: " 
-            ls -al
-            echo "git branch: "
-            git branch
-  
+jobs:  
   test:
     <<: *defaults
     steps:
@@ -48,7 +34,7 @@ jobs:
               exit 1
             fi
 
-  job_publish:
+  rc_publish:
     <<: *defaults
     steps:
       - add_ssh_keys:
@@ -63,7 +49,7 @@ jobs:
             git checkout -b release/${CIRCLE_TAG%-*}
             git push origin release/${CIRCLE_TAG%-*}
 
-  prod_publish:
+  major_publish:
     <<: *defaults
     steps:
       - add_ssh_keys:
@@ -94,7 +80,7 @@ jobs:
 workflows:
   workflow_commit:
     jobs:
-      - status:
+      - test:
           filters:
             branches:
               ignore:
@@ -110,7 +96,7 @@ workflows:
             branches:
               ignore: /.*/
 
-      - job_publish:
+      - rc_publish:
           requires:
             - tag_verify
           filters:
