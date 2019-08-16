@@ -37,9 +37,6 @@ jobs:
           name: "verify tag and file verison match"
           command: |
             echo "tag version is " $CIRCLE_TAG
-            echo "tag format change? " ${CIRCLE_TAG%-*}
-            #remove above line
-
 
             file_version=v$(.circleci/version.sh)
             echo "file version is " $file_version
@@ -61,7 +58,7 @@ jobs:
       - run:
           name: "push to release branch"
           command: |
-            echo "will push to release branch /release/" $CIRCLE_TAG
+            echo "will push to release branch /release/$CIRCLE_TAG"
             
             git remote -v 
             git branch -a
@@ -71,6 +68,35 @@ jobs:
             git push origin release/${CIRCLE_TAG%-*}
 
             #test code change
+
+  prod_publish:
+    <<: *defaults
+    steps:
+      - add_ssh_keys:
+          fingerprints: 
+            - "36:bc:44:d2:56:9a:74:82:ca:aa:3d:20:4c:36:1f:e9"     
+      - checkout
+      - run:
+          name: "generate tag"
+          command: |
+              current_version=$(.circleci/version.sh)
+
+              git checkout master^
+              before_version=$(.circleci/version.sh)
+              git checkout master
+
+              if [ $current_version != $before_version ]; then
+                echo "git tag v$version_this_commit"
+                git tag v$version_this_commit
+                git push origin v$version_this_commit
+              else
+                echo "Version is same or somthing wrong"
+              fi
+      - run:
+          name: "publish production"
+          command: |
+              echo "Publishing a major release! version=$CIRCLE_TAG"
+              echo "npm publish --tag "
 
 
 workflows:
