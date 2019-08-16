@@ -86,16 +86,16 @@ jobs:
               git push origin v$current_version
 
       - run:
-          name: "publish production"
+          name: "publish production and delete release branch"
           command: |
               version=$(git log --pretty=format:"%s" -1 | grep -o "v[0-9].\+")
               echo "Publishing a major release! version=$version"
               echo "npm publish --tag "
-      - run:
-          name: "delete release branch"
-          command: |
+
+              #delete release branch. it trigger by merge title
               echo "Delete branch release/${version%-*}"
               git push origin --delete release/${version%-*}
+
 
 workflows:
   every_commit:
