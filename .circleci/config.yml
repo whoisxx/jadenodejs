@@ -7,21 +7,7 @@ defaults: &defaults
 
 command:
 
-jobs:
-  status:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: "test whoIam"
-          command: |
-            echo "whoami: " $(whoami)
-            echo  "whereami: " $(pwd)
-            echo "ls command: " 
-            ls -al
-            echo "git branch: "
-            git branch
-  
+jobs:  
   test:
     <<: *defaults
     steps:
@@ -45,10 +31,10 @@ jobs:
               echo "verification pass"
             else
               echo "It's not same version."
-              #exit 1
+              exit 1
             fi
 
-  job_publish:
+  rc_publish:
     <<: *defaults
     steps:
       - add_ssh_keys:
@@ -59,17 +45,11 @@ jobs:
           name: "push to release branch"
           command: |
             echo "will push to release branch /release/$CIRCLE_TAG"
-            
-            git remote -v 
-            git branch -a
-            #remove above line
 
             git checkout -b release/${CIRCLE_TAG%-*}
             git push origin release/${CIRCLE_TAG%-*}
 
-            #test rc.2
-
-  prod_publish:
+  major_publish:
     <<: *defaults
     steps:
       - add_ssh_keys:
@@ -98,16 +78,16 @@ jobs:
 
 
 workflows:
-  every_commit:
+  workflow_commit:
     jobs:
-      - status:
+      - test:
           filters:
             branches:
               ignore:
                 - /release\/.*/
                 - master
 
-  tag_trigger:
+  workflow_publish:
     jobs:
       - tag_verify:
           filters:
@@ -116,7 +96,7 @@ workflows:
             branches:
               ignore: /.*/
 
-      - job_publish:
+      - rc_publish:
           requires:
             - tag_verify
           filters:
@@ -125,13 +105,10 @@ workflows:
             branches:
               ignore: /.*/
 
-  publish:
-    jobs:
-      - prod_publish:
+      - major_publish:
           filters:
             branches:
               only: master
 
-
-
+#test code rc.2
     
