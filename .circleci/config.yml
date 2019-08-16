@@ -122,6 +122,12 @@ workflows:
             branches:
               ignore: /.*/
 
+  publish:
+    jobs:
+      - prod_publish:
+          filters:
+            branches:
+              only: master
 
 
 
