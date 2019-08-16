@@ -45,7 +45,7 @@ jobs:
               echo "verification pass"
             else
               echo "It's not same version."
-              #exit 1
+              exit 1
             fi
 
   job_publish:
@@ -59,15 +59,9 @@ jobs:
           name: "push to release branch"
           command: |
             echo "will push to release branch /release/$CIRCLE_TAG"
-            
-            git remote -v 
-            git branch -a
-            #remove above line
 
             git checkout -b release/${CIRCLE_TAG%-*}
             git push origin release/${CIRCLE_TAG%-*}
-
-            #test rc.2
 
   prod_publish:
     <<: *defaults
