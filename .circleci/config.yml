@@ -92,7 +92,7 @@ jobs:
 
 
 workflows:
-  every_commit:
+  workflow_commit:
     jobs:
       - status:
           filters:
@@ -101,7 +101,7 @@ workflows:
                 - /release\/.*/
                 - master
 
-  tag_trigger:
+  workflow_publish:
     jobs:
       - tag_verify:
           filters:
@@ -119,13 +119,10 @@ workflows:
             branches:
               ignore: /.*/
 
-  publish:
-    jobs:
-      - prod_publish:
+      - major_publish:
           filters:
             branches:
               only: master
-
 
 
     
