@@ -12,7 +12,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const port = 80;
+const port = 800;
 app.listen(port, () => console.log('Server running...'));
 
 // view engine setup

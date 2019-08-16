@@ -1,0 +1,102 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: kjhman21/node:10.15.3-mocha
+
+command:
+
+jobs:
+  status:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: "test whoIam"
+          command: |
+            echo "whoami: " $(whoami)
+            echo  "whereami: " $(pwd)
+            echo "ls command: " 
+            ls -al
+            echo "git branch: "
+            git branch
+  
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: echo "npm install"
+      - run: echo "npm test"
+
+  tag_verify:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: "verify tag and file verison match"
+          command: |
+            echo "tag version is " $CIRCLE_TAG
+            echo "tag format change? " ${CIRCLE_TAG%-*}
+            #remove above line
+
+
+            file_version=v$(.circleci/version.sh)
+            echo "file version is " $file_version
+
+            if [ $file_version == ${CIRCLE_TAG%-*} ]; then
+              echo "verification pass"
+            else
+              echo "It's not same version."
+              #exit 1
+            fi
+
+  job_publish:
+    <<: *defaults
+    steps:
+      - add_ssh_keys:
+          fingerprints: 
+            - "36:bc:44:d2:56:9a:74:82:ca:aa:3d:20:4c:36:1f:e9"     
+      - checkout
+      - run:
+          name: "push to release branch"
+          command: |
+            echo "will push to release branch /release/" $CIRCLE_TAG
+            
+            git remote -v 
+            git branch -a
+            #remove above line
+
+            git checkout -b release/${CIRCLE_TAG%-*}
+            git push origin release/${CIRCLE_TAG%-*}
+
+            #test code change
+
+
+workflows:
+  every_commit:
+    jobs:
+      - status
+      - test
+
+  tag_trigger:
+    jobs:
+      - tag_verify:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+            branches:
+              ignore: /.*/
+      - job_publish:
+          requires:
+            - tag_verify
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+            branches:
+              ignore: /.*/
+
+
+
+
+    
