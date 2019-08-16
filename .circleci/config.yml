@@ -44,7 +44,7 @@ jobs:
       - run:
           name: "push to release branch"
           command: |
-            echo "will push to release branch /release/$CIRCLE_TAG"
+            echo "will push to release branch: /release/$CIRCLE_TAG"
 
             git checkout -b release/${CIRCLE_TAG%-*}
             git push origin release/${CIRCLE_TAG%-*}
@@ -110,5 +110,4 @@ workflows:
             branches:
               only: master
 
-#test code rc.2
     
