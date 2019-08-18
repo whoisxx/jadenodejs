@@ -25,6 +25,8 @@ jobs:
           name: "check hub"
           command: |
               echo "hub: " $(type hub)
+              git config user.email "test@test.com"
+              git config user.name "circleCI"
               hub pull-request -m "test pull request from dev" -b whoisxx:master -h whoisxx:dev
 
 
