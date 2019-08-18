@@ -7,13 +7,24 @@ defaults: &defaults
 
 command:
 
-jobs:  
+jobs:
   test:
     <<: *defaults
     steps:
       - checkout
       - run: echo "npm install"
       - run: echo "npm test"
+      - run:
+          name: "install hub"
+          command: |
+              type hub || \
+              (curl -sSLf https://github.com/github/hub/releases/download/v2.11.1/hub-linux-amd64-2.11.1.tgz | \
+                tar zxf - --strip-components=1 -C /tmp && \
+                sudo mv /tmp/bin/hub /usr/local/bin/hub)
+      - run:
+          name: "check hub"
+          command: |
+              echo "hub" $(hub)
 
   tag_verify:
     <<: *defaults
@@ -31,10 +42,10 @@ jobs:
               echo "verification pass"
             else
               echo "It's not same version."
-              exit 1
+              #exit 1
             fi
 
-  rc_publish:
+  job_publish:
     <<: *defaults
     steps:
       - add_ssh_keys:
@@ -44,12 +55,18 @@ jobs:
       - run:
           name: "push to release branch"
           command: |
-            echo "will push to release branch: /release/$CIRCLE_TAG"
+              echo "will push to release branch /release/$CIRCLE_TAG"
+              
+              git remote -v 
+              git branch -a
+              #remove above line
 
-            git checkout -b release/${CIRCLE_TAG%-*}
-            git push origin release/${CIRCLE_TAG%-*}
+              git checkout -b release/${CIRCLE_TAG%-*}
+              git push origin release/${CIRCLE_TAG%-*}
 
-  major_publish:
+
+
+  prod_publish:
     <<: *defaults
     steps:
       - add_ssh_keys:
@@ -78,7 +95,7 @@ jobs:
 
 
 workflows:
-  workflow_commit:
+  every_commit:
     jobs:
       - test:
           filters:
@@ -87,27 +104,31 @@ workflows:
                 - /release\/.*/
                 - master
 
-  workflow_publish:
+  tag_trigger:
     jobs:
       - tag_verify:
           filters:
             tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+-.*/
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
             branches:
               ignore: /.*/
 
-      - rc_publish:
+      - job_publish:
           requires:
             - tag_verify
           filters:
             tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+-.*/
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
             branches:
               ignore: /.*/
 
-      - major_publish:
+  publish:
+    jobs:
+      - prod_publish:
           filters:
             branches:
               only: master
+
+
 
     
