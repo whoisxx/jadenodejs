@@ -25,7 +25,7 @@ jobs:
           name: "pull request hub"
           command: |
               echo "hub: " $(type hub)
-              git config user.email "test@test.com"
+              # git config user.email "test@test.com"
               git config user.name "$GITHUB_ID"
               hub pull-request -m "test pull request from dev" -b whoisxx:master -h whoisxx:dev
 
