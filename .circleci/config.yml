@@ -22,11 +22,11 @@ jobs:
                 tar zxf - --strip-components=1 -C /tmp && \
                 sudo mv /tmp/bin/hub /usr/local/bin/hub)
       - run:
-          name: "check hub"
+          name: "pull request hub"
           command: |
               echo "hub: " $(type hub)
               git config user.email "test@test.com"
-              git config user.name "circleCI"
+              git config user.name "$GITHUB_ID"
               hub pull-request -m "test pull request from dev" -b whoisxx:master -h whoisxx:dev
 
 
