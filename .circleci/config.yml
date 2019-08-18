@@ -28,14 +28,11 @@ jobs:
               curl --fail -X POST \
               "https://api.github.com/repos/whoisxx/jadenodejs/pulls" \
               -H "Authorization: token $GITHUB_TOKEN"
-              -d @- <<EOF
-              {
+              --data '{
                 "title": "Amazing new feature",
                 "body": "Please pull this in!",
                 "head": "dev",
-                "base": "master"
-              }
-              EOF
+                "base": "master"}'
 
 
       # - run:
