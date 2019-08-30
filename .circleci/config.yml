@@ -17,6 +17,7 @@ jobs:
       - run: echo $C
 
   install_hub:
+    <<: *defaults
     steps:
       - run:
           name: "install hub"
