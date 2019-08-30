@@ -97,7 +97,7 @@ workflows:
   every_commit:
     jobs:
       - test:
-          contest: Sample
+          context: Sample
           filters:
             branches:
               ignore:
