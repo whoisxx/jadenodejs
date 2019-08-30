@@ -12,8 +12,12 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: echo "npm install"
-      - run: echo "npm test"
+      - run: echo $A
+      - run: echo $B
+      - run: echo $C
+
+  install_hub:
+    steps:
       - run:
           name: "install hub"
           command: |
@@ -21,28 +25,6 @@ jobs:
               (curl -sSLf https://github.com/github/hub/releases/download/v2.11.1/hub-linux-amd64-2.11.1.tgz | \
                 tar zxf - --strip-components=1 -C /tmp && \
                 sudo mv /tmp/bin/hub /usr/local/bin/hub)
-      - run:
-          name: "create PR use github API"
-          command: |
-              echo "Create Pull request"
-              curl --fail -X POST \
-              "https://api.github.com/repos/whoisxx/jadenodejs/pulls" \
-              -H "Authorization: token $GITHUB_TOKEN"
-              --data '{\
-                "title": "Amazing new feature",\
-                "body": "Please pull this in!",\
-                "head": "dev",\
-                "base": "master"}'
-
-
-      # - run:
-      #     name: "pull request hub"
-      #     command: |
-      #         echo "hub: " $(type hub)
-      #         # git config user.email "test@test.com"
-      #         git config user.name "$GITHUB_ID"
-      #         hub pull-request -m "test pull request from dev" -b whoisxx:master -h whoisxx:dev
-
 
   tag_verify:
     <<: *defaults
@@ -81,8 +63,6 @@ jobs:
 
               git checkout -b release/${CIRCLE_TAG%-*}
               git push origin release/${CIRCLE_TAG%-*}
-
-
 
   prod_publish:
     <<: *defaults
